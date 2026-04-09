@@ -13,9 +13,9 @@
     // Conbination Detail
     "detail": {
       "no_drawer": {"drawer": 0, "door": 1, "type_suffix": "F", "width": [9]},
-      "single_drawer": {"drawer": 1, "door": 1, "name_suffix": "-SINGLE DOOR", "width": [12, 15, 18, 21]},
-      "double_door": {"drawer": 1, "door": 2, "name_suffix": "-DOUBLE DOOR", "width": [24, 27, 30, 33, 36]},
-      "double_drawer": {"drawer": 2, "door": 2, "name_suffix": "-DOUBLE DOOR", "width": [42]}
+      "single_drawer": {"drawer": 1, "door": 1, "name_suffix": " - SINGLE DOOR", "width": [12, 15, 18, 21]},
+      "double_door": {"drawer": 1, "door": 2, "name_suffix": " - DOUBLE DOOR", "width": [24, 27, 30, 33, 36]},
+      "double_drawer": {"drawer": 2, "door": 2, "name_suffix": " - DOUBLE DOOR", "width": [42]}
     }
   },
 
@@ -93,13 +93,8 @@
   },
 
   "BES": {
-    // Base Attribute
     "name": "BASE ENDING SHELF",
-    "width": [9],
-    "height": [30],
-    "depth": [24]
-    // Variant Attribute: None
-    // Conbination Detail: None
+    "width": [9], "height": [30], "depth": [24]
   },
 
   "RD": {
@@ -126,13 +121,13 @@
   },
 
   "FSB": {
-    // Base Attribute
     "name": "FARMHOUSE SINK BASE",
-    "width": [36],
-    "height": [34.5],
-    "depth": [24]
-    // Variant Attribute: None
-    // Conbination Detail: None
+    "width": [36], "height": [34.5], "depth": [24]
+  },
+
+  "CSB": {
+    "name": "CORNER SINK",
+    "width": [42], "height": [34.5], "depth": [24]
   },
 
   /**
@@ -141,14 +136,88 @@
 
   "W": {
     // Base Attribute
+    "name": "WALL CABINET",
     "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
-    "height": [12, 15, 30, 36, 42],
-    "depth": [12],
+    "height": [12, 15, 18, 21, 24, 30, 36, 42],
+    "depth": [12, 24],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
-      "single_door": {"door": 1, "width": [9, 12, 15, 18, 21]},
-      "double_door": {"door": 2, "width": [24, 27, 30, 33, 36, 42]}
+      "single_door": {"door": 1, "name_suffix": " - SINGLE DOOR", "width": [9, 12, 15, 18, 21]},
+      "double_door": {"door": 2, "name_suffix": " - DOUBLE DOOR", "width": [24, 27, 30, 33, 36, 42]},
+      "double_shelves": {"shelves": 2, "height": [30, 36]},
+      "triple_shelves": {"shelves": 3, "height": [42]},
+      "not_wall_cab": {"not_exist": true, "width": [9, 12, 15, 18, 21, 24, 27, 33, 42], "height": [18, 21, 24]},
+
+      "stackable": {"name": "WALL STACKABLE CABINET", "height": [12, 15], "depth": [12]},
+      "not_stackable": {"not_exist": true, "width": [33, 42], "height": [12, 15], "depth": [12]},
+
+      "fridge": {"name": "WALL FRIDGE CABINET", "width": [30, 36], "height": [12, 15, 18, 21, 24], "depth": [24]},
+      "not_fridge_width": {"not_exist": true, "width": [9, 12, 15, 18, 21, 24, 27, 33, 42], "depth": [24]},
+      "not_fridge_height": {"not_exist": true, "height": [30, 36, 42], "depth": [24]},
+
+      "bridge": {"name": "WALL BRIDGE CABINET", "width": [30, 36], "height": [12, 15, 18, 21, 24], "depth": [12]}
+
     }
+  },
+
+  "WDC": {
+    // Base Attribute
+    "name": "WALL DIAGONAL CORNER CABINET",
+    "width": [24],
+    "height": [15, 30, 36, 42],
+    "depth": [12]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "WER": {
+    // Base Attribute
+    "name": "WALL EASYREACH CORNER CABINET",
+    "width": [24],
+    "height": [30, 36, 42],
+    "depth": [24]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "WBC": {
+    // Base Attribute
+    "name": "WALL EASYREACH CORNER CABINET",
+    "width": [27],
+    "height": [30, 36, 42],
+    "depth": [12]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "WES": {
+    // Base Attribute
+    "name": "WALL ENDING SHELF",
+    "width": [9],
+    "height": [30, 36, 42],
+    "depth": [12]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "WMC": {
+    // Base Attribute
+    "name": "WALL MICROWAVE CABINET",
+    "width": [30, 27],
+    "height": [30, 36, 42],
+    "depth": [12]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "WRC": {
+    "name": "WALL RACK",
+    "width": [30], "height": [15], "depth": [12]
+  },
+
+  "PR": {
+    "name": "PLATE RACK",
+    "width": [30], "height": [15], "depth": [12]
   }
 }
