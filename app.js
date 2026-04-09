@@ -524,9 +524,9 @@ function renderQuestion(question) {
   if (question.candidate.context) {
     contextParts.push(question.candidate.context);
   }
-  elements.questionContext.textContent = contextParts.join(" • ");
+  // elements.questionContext.textContent = contextParts.join(" • ");
+  elements.questionContext.textContent = "PLACE HOLDER"
 
-  elements.feedback.textContent = "Press 1-4 or tap a choice.";
   elements.feedback.className = "feedback";
   elements.nextButton.disabled = true;
 
