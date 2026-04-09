@@ -1,0 +1,154 @@
+{
+  /**
+  * BASE CABINETS
+  */
+
+  "B": {
+    // Base Attribute
+    "name": "BASE CABINET",
+    "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
+    "depth": [24],
+    "height": [34.5],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "no_drawer": {"drawer": 0, "door": 1, "type_suffix": "F", "width": [9]},
+      "single_drawer": {"drawer": 1, "door": 1, "name_suffix": "-SINGLE DOOR", "width": [12, 15, 18, 21]},
+      "double_door": {"drawer": 1, "door": 2, "name_suffix": "-DOUBLE DOOR", "width": [24, 27, 30, 33, 36]},
+      "double_drawer": {"drawer": 2, "door": 2, "name_suffix": "-DOUBLE DOOR", "width": [42]}
+    }
+  },
+
+  "DB": {
+    // Base Attribute
+    "name": "DRAWER BASE CABINET",
+    "width": [12, 15, 18, 21, 24, 27, 30, 33, 36],
+    "depth": [24],
+    "height": [34.5],
+    // Variant Attribute
+    "variant": {
+      "double_drawer": {"drawer": 2, "type_suffix": "-2", "allow_variant": {"width": [24, 30, 36]}},
+      "triple_drawer": {"drawer": 3} // defalt
+    }
+    // Conbination Detail: None
+  },
+
+  "BMC": {
+    // Base Attribute
+    "name": "BASE MICROWAVE CABINET",
+    "width": [30, 27],
+    "depth": [24],
+    "height": [34.5]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "DKD": {
+    // Base Attribute
+    "name": "DESK KNEE DREWER",
+    "width": [30, 36],
+    "depth": [21],
+    "height": [6.625],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "out_width_30": {"self_width": 24, "width": [30]},
+      "out_width_36": {"self_width": 30, "width": [36]}
+    }
+  },
+
+  "BLS": {
+    // Base Attribute
+    "name": "BASE CORNER CABINET-LASY SUSAN",
+    "width": [33, 36],
+    "depth": [24],
+    "height": [34.5]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "BBC": {
+    // Base Attribute
+    "name": "BASE BLIND CORNER CABINET",
+    "width": [36, 39, 42],
+    "depth": [24],
+    "height": [34.5],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "install_range_36": {"install_range": 39, "type_suffix": "39", "width": [36]},
+      "install_range_39": {"install_range": 42, "type_suffix": "42", "width": [39]},
+      "install_range_42": {"install_range": 45, "type_suffix": "45", "width": [42]}
+    }
+  },
+
+  "BSR": {
+    // Base Attribute
+    "name": "BASE SPICE RACK CABINET",
+    "width": [6, 9, 12],
+    "depth": [24],
+    "height": [34.5]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "BES": {
+    // Base Attribute
+    "name": "BASE ENDING SHELF",
+    "width": [9],
+    "depth": [24],
+    "height": [30]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "RD": {
+    // Base Attribute
+    "name": "ROLL-OUT DRAWER",
+    "width": [18, 21, 24, 27, 30, 33, 36],
+    "depth": [20.375]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "SB": {
+    // Base Attribute
+    "name": "SINK BASE CABINET",
+    "width": [30, 33, 36, 42],
+    "depth": [24],
+    "height": [34.5],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "single_fake_drawer": {"fake_drawer": 1, "door": 2, "width": [30, 33, 36]},
+      "double_fake_drawer": {"fake_drawer": 2, "door": 2, "width": [42]}
+    }
+  },
+
+  "FSB": {
+    // Base Attribute
+    "name": "FARMHOUSE SINK BASE",
+    "width": [36],
+    "depth": [24],
+    "height": [34.5]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  /**
+  * WALL CABINETS
+  */
+
+  "W": {
+    // Base Attribute
+    "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
+    "depth": [12],
+    "height": [12, 15, 30, 36, 42],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "single_door": {"door": 1, "width": [9, 12, 15, 18, 21]},
+      "double_door": {"door": 2, "width": [24, 27, 30, 33, 36, 42]}
+    }
+  }
+}
