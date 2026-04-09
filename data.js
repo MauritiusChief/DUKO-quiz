@@ -282,7 +282,9 @@ const RAW_DATA = {
       alias: { type: "SK", width: [24], thickness: [0.25] },
       half_thick: { type_suffix: "H", thickness: [0.5] },
       quarter_thick: { type_suffix: "Q", thickness: [0.25] },
+      not_3q: { not_exist: true, width: [24, 36], thickness: [0.75]},
       triple_quarter_thick: { type_suffix: "-3/4''", thickness: [0.75] },
+      not_q: { not_exist: true, width: [39], thickness: [0.25, 0.5]},
     },
   },
   VAL: {

@@ -217,6 +217,12 @@ function collectNameToTypeCandidates(entities) {
   const candidates = [];
 
   for (const entity of entities) {
+    // 这类题要求用“同 baseType + 混淆尺寸”来构造干扰项，
+    // 因此没有 type_code 尺寸的实体不进入该题型题池。
+    if (!entity.typeCodeKeys || entity.typeCodeKeys.length === 0) {
+      continue;
+    }
+
     const trueTypes = index.get(entity.fullName) || [];
     if (!trueTypes.includes(entity.fullType)) {
       continue;
@@ -328,6 +334,158 @@ function buildSyntheticDimensionDistractor(candidate, pool, existingChoices) {
   }
 
   return null;
+}
+
+/**
+ * 为 name_to_type 题型收集同 baseType 下可复用的尺寸值池。
+ *
+ * @param {Array<{ baseType: string, entity: { dimensions: Record<string, number|string> } }>} pool - 完整名字题池。
+ * @param {string} baseType - 当前题目的 baseType。
+ * @returns {Record<string, Array<number|string>>} 按尺寸字段分组的可用值池。
+ */
+function collectDimensionValuesByBaseType(pool, baseType) {
+  const dimensionValues = {};
+
+  for (const item of pool) {
+    if (item.baseType !== baseType) {
+      continue;
+    }
+
+    for (const [key, value] of Object.entries(item.entity.dimensions)) {
+      if (!dimensionValues[key]) {
+        dimensionValues[key] = [];
+      }
+      if (!dimensionValues[key].includes(value)) {
+        dimensionValues[key].push(value);
+      }
+    }
+  }
+
+  return dimensionValues;
+}
+
+/**
+ * 为 name_to_type 题型生成一个 synthetic 干扰项。
+ *
+ * 规则：
+ * 1. 保留原有 baseType
+ * 2. 按当前实体的 typeCodeKeys 顺序重组尺寸编码
+ * 3. 优先复用同 baseType 的真实尺寸值
+ * 4. 若真实尺寸值不够，再用邻近数值补位
+ *
+ * @param {{
+ *   answerValue: string,
+ *   baseType: string,
+ *   trueTypes: string[],
+ *   entity: {
+ *     typeCodeKeys: string[],
+ *     dimensions: Record<string, number|string>
+ *   }
+ * }} candidate - 当前名字题 candidate。
+ * @param {Array<object>} pool - 完整名字题池。
+ * @param {string[]} existingChoices - 已经使用过的选项。
+ * @returns {string|null} 新的 synthetic type；如果无法生成则返回 null。
+ */
+function buildSyntheticTypeDistractor(candidate, pool, existingChoices) {
+  const dimensionValues = collectDimensionValuesByBaseType(pool, candidate.baseType);
+  const { typeCodeKeys, dimensions } = candidate.entity;
+
+  for (const key of typeCodeKeys) {
+    const knownValues = dimensionValues[key] || [];
+    for (const value of knownValues) {
+      if (value === dimensions[key]) {
+        continue;
+      }
+
+      const fakeDimensions = { ...dimensions, [key]: value };
+      const fakeType = buildFullType(candidate.baseType, typeCodeKeys, fakeDimensions);
+
+      if (
+        !existingChoices.includes(fakeType) &&
+        fakeType !== candidate.answerValue &&
+        !candidate.trueTypes.includes(fakeType)
+      ) {
+        return fakeType;
+      }
+    }
+  }
+
+  for (const key of typeCodeKeys) {
+    const baseValue = dimensions[key];
+    if (typeof baseValue !== "number") {
+      continue;
+    }
+
+    const fallbackOffsets = [1, -1, 3, -3, 6, -6, 0.5, -0.5, 0.25, -0.25];
+    for (const offset of fallbackOffsets) {
+      const nextValue = baseValue + offset;
+      if (nextValue < 0) {
+        continue;
+      }
+
+      const fakeDimensions = { ...dimensions, [key]: nextValue };
+      const fakeType = buildFullType(candidate.baseType, typeCodeKeys, fakeDimensions);
+
+      if (
+        !existingChoices.includes(fakeType) &&
+        fakeType !== candidate.answerValue &&
+        !candidate.trueTypes.includes(fakeType)
+      ) {
+        return fakeType;
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * 为 name_to_type 题型生成三个错误答案。
+ *
+ * 错误答案必须：
+ * 1. 与正确答案拥有相同 baseType
+ * 2. 不属于当前 fullName 的任何真实 type
+ * 3. 不与已有答案重复
+ *
+ * @param {{
+ *   answerValue: string,
+ *   baseType: string,
+ *   trueTypes: string[],
+ *   entity: object
+ * }} candidate - 当前名字题 candidate。
+ * @param {Array<{ answerValue: string, baseType: string, trueTypes: string[], entity: object }>} pool - 完整名字题池。
+ * @returns {string[]} 三个错误答案。
+ */
+function buildNameTypeDistractors(candidate, pool) {
+  const distractors = [];
+
+  const realSameBaseTypePool = pool
+    .filter((item) => item.baseType === candidate.baseType)
+    .map((item) => item.answerValue)
+    .filter((value) => value !== candidate.answerValue)
+    .filter((value) => !candidate.trueTypes.includes(value));
+
+  for (const value of shuffle(Array.from(new Set(realSameBaseTypePool)))) {
+    distractors.push(value);
+    if (distractors.length === 3) {
+      return distractors;
+    }
+  }
+
+  while (distractors.length < 3) {
+    const synthetic = buildSyntheticTypeDistractor(candidate, pool, [
+      candidate.answerValue,
+      ...distractors,
+    ]);
+
+    if (!synthetic) {
+      break;
+    }
+
+    distractors.push(synthetic);
+  }
+
+  return distractors;
 }
 
 const QUESTION_TYPES = {
@@ -472,32 +630,8 @@ const QUESTION_TYPES = {
      * @returns {string[]} 包含正确答案在内的四个选项。
      */
     buildChoices(candidate, pool) {
-      const preferredPool = pool
-        .filter((item) => item.answerValue !== candidate.answerValue)
-        .filter((item) => !candidate.trueTypes.includes(item.answerValue))
-        .filter((item) => item.baseType === candidate.baseType || item.baseName === candidate.baseName)
-        .map((item) => item.answerValue);
-
-      const fallbackPool = pool
-        .filter((item) => item.answerValue !== candidate.answerValue)
-        .filter((item) => !candidate.trueTypes.includes(item.answerValue))
-        .map((item) => item.answerValue);
-
-      const distractors = createStringDistractors(candidate.answerValue, preferredPool);
-
-      if (distractors.length < 3) {
-        const fallbackDistractors = createStringDistractors(candidate.answerValue, fallbackPool);
-        for (const option of fallbackDistractors) {
-          if (!distractors.includes(option)) {
-            distractors.push(option);
-          }
-          if (distractors.length === 3) {
-            break;
-          }
-        }
-      }
-
-      return shuffle([candidate.answerValue, ...distractors.slice(0, 3)]);
+      const distractors = buildNameTypeDistractors(candidate, pool);
+      return shuffle([candidate.answerValue, ...distractors]);
     },
     /**
      * 判断名字题答案是否正确。
