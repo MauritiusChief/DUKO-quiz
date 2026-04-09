@@ -1,4 +1,5 @@
-const QUIZ_FIELDS = ["drawer", "door", "fake_drawer", "shelves"];
+const QUIZ_NUMERIC_FIELDS = ["drawer", "door", "fake_drawer", "shelves"];
+const QUIZ_DETAIL_FIELDS = [...QUIZ_NUMERIC_FIELDS, "stack"];
 const META_KEYS = new Set([
   "name",
   "type_code",
@@ -206,16 +207,17 @@ function collectApplicableDetails(item, dimensions) {
  *   baseType: string,
  *   baseName: string,
  *   fullType: string,
+ *   fullName: string,
  *   displayName: string,
- *   detailKey: string,
- *   answerValue: number,
+ *   typeCodeKeys: string[],
  *   dimensions: Record<string, number|string>,
+ *   effectiveFields: Record<string, unknown>,
  *   context: string,
  *   tags: string
- * }>} 可直接用于出题的扁平候选列表。
+ * }>} 可直接用于多题型出题的统一实体列表。
  */
 function normalizeData(rawData) {
-  const candidates = [];
+  const entities = [];
 
   for (const [baseType, item] of Object.entries(rawData)) {
     const baseDimensionKeys = getDimensionKeys(item);
@@ -232,6 +234,12 @@ function normalizeData(rawData) {
 
     for (const dimensions of dimensionCombos) {
       const applicableDetails = collectApplicableDetails(item, dimensions);
+      const isBlocked = applicableDetails.negative.length > 0;
+
+      // 命中 not_exist 规则的尺寸组合不进入题池。
+      if (isBlocked) {
+        continue;
+      }
 
       for (const variantEntry of variantEntries) {
         // 某些 variant 只允许出现在特定尺寸下，例如只允许某些 width。
@@ -246,6 +254,7 @@ function normalizeData(rawData) {
         const activeTags = [];
         let effectiveType = baseType;
         let suffix = variantEntry.rule.type_suffix || "";
+        let fullName = item.name;
 
         if (variantEntry.key !== "default") {
           activeTags.push(variantEntry.key.replaceAll("_", " "));
@@ -257,10 +266,12 @@ function normalizeData(rawData) {
           Object.assign(effectiveFields, detailFields);
 
           if (detailEntry.rule.name) {
+            fullName = detailEntry.rule.name;
             displayNames.push(detailEntry.rule.name);
           }
 
           if (detailEntry.rule.name_suffix) {
+            fullName = `${item.name}${detailEntry.rule.name_suffix}`;
             displayNames.push(`${item.name}${detailEntry.rule.name_suffix}`);
           }
 
@@ -292,7 +303,7 @@ function normalizeData(rawData) {
 
         // variant 也可能带来额外上下文，但这里要避免把答案本身提前暴露出来。
         for (const [key, value] of Object.entries(variantFields)) {
-          if (QUIZ_FIELDS.includes(key)) {
+          if (QUIZ_DETAIL_FIELDS.includes(key)) {
             continue;
           }
           if (typeof value === "number" || typeof value === "string") {
@@ -304,33 +315,27 @@ function normalizeData(rawData) {
         const displayName = Array.from(new Set(displayNames)).join(" / ");
         const tagText = Array.from(new Set(activeTags)).join(" • ");
 
-        // 每个数值事实都单独输出成一条 candidate，后面才好一题一题地出。
-        for (const detailKey of QUIZ_FIELDS) {
-          if (typeof effectiveFields[detailKey] !== "number") {
-            continue;
-          }
+        const entity = {
+          id: `${fullType}:${fullName}:${tagText || "base"}`,
+          baseType,
+          baseName: item.name,
+          fullType,
+          fullName,
+          displayName,
+          typeCodeKeys: [...typeCodeKeys],
+          dimensions: { ...dimensions },
+          effectiveFields: { ...effectiveFields },
+          context: contextText,
+          tags: tagText,
+        };
 
-          const candidate = {
-            id: `${fullType}:${detailKey}:${tagText || "base"}`,
-            baseType,
-            baseName: item.name,
-            fullType,
-            displayName,
-            detailKey,
-            answerValue: effectiveFields[detailKey],
-            dimensions,
-            context: contextText,
-            tags: tagText,
-          };
-
-          candidates.push(candidate);
-        }
+        entities.push(entity);
       }
     }
   }
 
-  // 不同规则路径有时会落到同一条题目上，这里按 id 去重。
-  return candidates.filter((candidate, index, list) => {
-    return list.findIndex((other) => other.id === candidate.id) === index;
+  // 不同规则路径有时会落到同一条实体上，这里按 id 去重。
+  return entities.filter((entity, index, list) => {
+    return list.findIndex((other) => other.id === entity.id) === index;
   });
 }

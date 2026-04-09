@@ -1,3 +1,11 @@
+const DIMENSION_LABELS = {
+  width: "W",
+  height: "H",
+  depth: "D",
+  length: "L",
+  thickness: "T",
+};
+
 /**
  * 用 Fisher-Yates 算法返回一个打乱后的新数组。
  *
@@ -15,16 +23,503 @@ function shuffle(items) {
 }
 
 /**
- * 为四选一题目生成三个错误答案。
+ * 计算两个整数的最大公约数。
  *
- * 它会优先使用同一类知识点里真实存在过的其他数值，
- * 因为这样的干扰项更像真的。若真实值不够，再从正确答案附近的整数补齐。
+ * @param {number} a - 第一个整数。
+ * @param {number} b - 第二个整数。
+ * @returns {number} 最大公约数。
+ */
+function greatestCommonDivisor(a, b) {
+  let x = Math.abs(a);
+  let y = Math.abs(b);
+
+  while (y !== 0) {
+    [x, y] = [y, x % y];
+  }
+
+  return x || 1;
+}
+
+/**
+ * 将十进制尺寸值转换成分数字符串。
+ *
+ * @param {number|string} value - 原始尺寸值。
+ * @returns {string} 适合显示在选项中的字符串格式。
+ */
+function formatDimensionDisplay(value) {
+  if (typeof value !== "number" || Number.isInteger(value)) {
+    return String(value);
+  }
+
+  const scale = 16;
+  const sign = value < 0 ? "-" : "";
+  const absoluteValue = Math.abs(value);
+  const whole = Math.floor(absoluteValue);
+  const fractionNumeratorRaw = Math.round((absoluteValue - whole) * scale);
+
+  if (fractionNumeratorRaw === 0) {
+    return `${sign}${whole}`;
+  }
+
+  if (fractionNumeratorRaw === scale) {
+    return `${sign}${whole + 1}`;
+  }
+
+  const divisor = greatestCommonDivisor(fractionNumeratorRaw, scale);
+  const numerator = fractionNumeratorRaw / divisor;
+  const denominator = scale / divisor;
+
+  if (whole === 0) {
+    return `${sign}${numerator}/${denominator}`;
+  }
+
+  return `${sign}${whole} ${numerator}/${denominator}`;
+}
+
+/**
+ * 返回尺寸字段对应的显示缩写。
+ *
+ * @param {string} key - 原始尺寸字段名。
+ * @returns {string} 尺寸缩写。
+ */
+function formatDimensionLabel(key) {
+  return DIMENSION_LABELS[key] || key.toUpperCase();
+}
+
+/**
+ * 从统一实体里提取没有编码进 type 的尺寸字段。
+ *
+ * @param {{ typeCodeKeys: string[], dimensions: Record<string, number|string> }} entity - 已归一化实体。
+ * @returns {string[]} 非 type_code 尺寸字段列表。
+ */
+function getVisibleDimensionKeys(entity) {
+  return Object.keys(entity.dimensions).filter((key) => !entity.typeCodeKeys.includes(key));
+}
+
+/**
+ * 为尺寸题拼出完整选项文本。
+ *
+ * @param {{ dimensions: Record<string, number|string>, typeCodeKeys: string[] }} entity - 已归一化实体。
+ * @returns {string} 尺寸组合文本；如果没有可展示维度则返回空字符串。
+ */
+function buildDimensionOption(entity) {
+  const visibleKeys = getVisibleDimensionKeys(entity);
+  if (visibleKeys.length === 0) {
+    return "";
+  }
+
+  return visibleKeys
+    .map((key) => `${formatDimensionLabel(key)}=${formatDimensionDisplay(entity.dimensions[key])}`)
+    .join(", ");
+}
+
+/**
+ * 生成 detail_count 题型使用的候选题列表。
+ *
+ * @param {Array<{ id: string, fullType: string, baseName: string, effectiveFields: Record<string, unknown> }>} entities - 统一实体列表。
+ * @returns {Array<object>} 适用于 detail_count 的候选题。
+ */
+function collectDetailCountCandidates(entities) {
+  const candidates = [];
+
+  for (const entity of entities) {
+    for (const detailKey of QUIZ_NUMERIC_FIELDS) {
+      if (typeof entity.effectiveFields[detailKey] !== "number") {
+        continue;
+      }
+
+      candidates.push({
+        id: `${entity.id}:detail_count:${detailKey}`,
+        typeKey: "detail_count",
+        baseName: entity.baseName,
+        fullType: entity.fullType,
+        detailKey,
+        answerValue: entity.effectiveFields[detailKey],
+        entity,
+      });
+    }
+  }
+
+  return candidates;
+}
+
+/**
+ * 生成 detail_stack 题型使用的候选题列表。
+ *
+ * @param {Array<{ id: string, fullType: string, baseName: string, effectiveFields: Record<string, unknown> }>} entities - 统一实体列表。
+ * @returns {Array<object>} 适用于 detail_stack 的候选题。
+ */
+function collectDetailStackCandidates(entities) {
+  return entities
+    .filter((entity) => typeof entity.effectiveFields.stack === "string")
+    .map((entity) => ({
+      id: `${entity.id}:detail_stack`,
+      typeKey: "detail_stack",
+      baseName: entity.baseName,
+      fullType: entity.fullType,
+      answerValue: entity.effectiveFields.stack,
+      entity,
+    }));
+}
+
+/**
+ * 生成 type_dimensions 题型使用的候选题列表。
+ *
+ * @param {Array<{ id: string, fullType: string, baseName: string, dimensions: Record<string, number|string>, typeCodeKeys: string[] }>} entities - 统一实体列表。
+ * @returns {Array<object>} 适用于 type_dimensions 的候选题。
+ */
+function collectTypeDimensionCandidates(entities) {
+  return entities
+    .map((entity) => {
+      const visibleDimensionKeys = getVisibleDimensionKeys(entity);
+      const answerValue = buildDimensionOption(entity);
+      return {
+        id: `${entity.id}:type_dimensions`,
+        typeKey: "type_dimensions",
+        baseName: entity.baseName,
+        fullType: entity.fullType,
+        answerValue,
+        visibleDimensionKeys,
+        entity,
+      };
+    })
+    .filter((candidate) => candidate.answerValue !== "");
+}
+
+/**
+ * 按完整名字建立可快速查询的 type 索引。
+ *
+ * @param {Array<{ fullName: string, fullType: string }>} entities - 统一实体列表。
+ * @returns {Map<string, string[]>} 从 fullName 到真实 fullType 列表的映射。
+ */
+function buildNameTypeIndex(entities) {
+  const index = new Map();
+
+  for (const entity of entities) {
+    const existing = index.get(entity.fullName) || [];
+    if (!existing.includes(entity.fullType)) {
+      existing.push(entity.fullType);
+    }
+    index.set(entity.fullName, existing);
+  }
+
+  return index;
+}
+
+/**
+ * 生成 name_to_type 题型使用的候选题列表。
+ *
+ * @param {Array<{ id: string, baseName: string, baseType: string, fullName: string, fullType: string }>} entities - 统一实体列表。
+ * @returns {Array<object>} 适用于 name_to_type 的候选题。
+ */
+function collectNameToTypeCandidates(entities) {
+  const index = buildNameTypeIndex(entities);
+  const candidates = [];
+
+  for (const entity of entities) {
+    const trueTypes = index.get(entity.fullName) || [];
+    if (!trueTypes.includes(entity.fullType)) {
+      continue;
+    }
+
+    candidates.push({
+      id: `${entity.id}:name_to_type`,
+      typeKey: "name_to_type",
+      baseName: entity.baseName,
+      baseType: entity.baseType,
+      fullName: entity.fullName,
+      answerValue: entity.fullType,
+      trueTypes,
+      entity,
+    });
+  }
+
+  return candidates.filter((candidate, indexPosition, list) => {
+    return list.findIndex((other) => other.id === candidate.id) === indexPosition;
+  });
+}
+
+/**
+ * 按题型生成候选题池，方便后续随机抽题。
+ *
+ * @param {Array<object>} entities - 统一实体列表。
+ * @returns {Record<string, object[]>} 按题型 key 分组后的候选池。
+ */
+function buildCandidatePoolsByType(entities) {
+  const pools = {};
+
+  for (const [typeKey, questionType] of Object.entries(QUESTION_TYPES)) {
+    pools[typeKey] = questionType.collectCandidates(entities);
+  }
+
+  return pools;
+}
+
+/**
+ * 根据现有字符串选项补出最多三个错误答案。
+ *
+ * @param {string} correctValue - 正确答案文本。
+ * @param {string[]} poolValues - 可作为干扰项的候选文本。
+ * @returns {string[]} 最多三个错误答案。
+ */
+function createStringDistractors(correctValue, poolValues) {
+  return shuffle(
+    Array.from(new Set(poolValues.filter((value) => value !== correctValue && value !== "")))
+  ).slice(0, 3);
+}
+
+/**
+ * 构建一个用于尺寸题的伪造错误选项，保持维度结构不变。
+ *
+ * @param {{ visibleDimensionKeys: string[], entity: { dimensions: Record<string, number|string> }, answerValue: string }} candidate - 当前尺寸题 candidate。
+ * @param {Array<object>} pool - 同题型完整题池。
+ * @param {string[]} existingChoices - 已经生成的选项文本。
+ * @returns {string|null} 新的错误选项；如果无法构造则返回 null。
+ */
+function buildSyntheticDimensionDistractor(candidate, pool, existingChoices) {
+  const keys = candidate.visibleDimensionKeys;
+  const signature = keys.join("|");
+  const related = pool.filter((item) => item.visibleDimensionKeys.join("|") === signature);
+
+  for (const key of keys) {
+    const alternateValues = Array.from(
+      new Set(
+        related
+          .map((item) => item.entity.dimensions[key])
+          .filter((value) => value !== candidate.entity.dimensions[key])
+      )
+    );
+
+    for (const alternateValue of alternateValues) {
+      const fakeDimensions = { ...candidate.entity.dimensions, [key]: alternateValue };
+      const optionText = keys
+        .map((dimensionKey) => `${formatDimensionLabel(dimensionKey)}=${formatDimensionDisplay(fakeDimensions[dimensionKey])}`)
+        .join(", ");
+
+      if (!existingChoices.includes(optionText) && optionText !== candidate.answerValue) {
+        return optionText;
+      }
+    }
+  }
+
+  // 如果同结构真实数据不足，则用邻近尺寸值伪造同结构干扰项。
+  for (const key of keys) {
+    const baseValue = candidate.entity.dimensions[key];
+    if (typeof baseValue !== "number") {
+      continue;
+    }
+
+    const fallbackOffsets = [1, -1, 0.5, -0.5, 0.25, -0.25];
+    for (const offset of fallbackOffsets) {
+      const nextValue = baseValue + offset;
+      if (nextValue < 0) {
+        continue;
+      }
+
+      const fakeDimensions = { ...candidate.entity.dimensions, [key]: nextValue };
+      const optionText = keys
+        .map((dimensionKey) => `${formatDimensionLabel(dimensionKey)}=${formatDimensionDisplay(fakeDimensions[dimensionKey])}`)
+        .join(", ");
+
+      if (!existingChoices.includes(optionText) && optionText !== candidate.answerValue) {
+        return optionText;
+      }
+    }
+  }
+
+  return null;
+}
+
+const QUESTION_TYPES = {
+  detail_count: {
+    label: "Detail Count",
+    collectCandidates: collectDetailCountCandidates,
+    /**
+     * 生成一道“数量题”的题面文本。
+     *
+     * @param {{ fullType: string, detailKey: string }} candidate - 当前要出题的 candidate。
+     * @returns {string} 显示在页面上的题目文本。
+     */
+    buildPrompt(candidate) {
+      return `${candidate.fullType} has how many ${candidate.detailKey}?`;
+    },
+    /**
+     * 生成并打乱一道题显示的四个选项。
+     *
+     * @param {{ detailKey: string, answerValue: number }} candidate - 当前题目的 candidate。
+     * @param {Array<{ detailKey: string, answerValue: number }>} pool - 完整 candidate 池。
+     * @returns {Array<number>} 包含正确答案在内的四个选项。
+     */
+    buildChoices(candidate, pool) {
+      const sameFieldValues = pool
+        .filter((item) => item.detailKey === candidate.detailKey)
+        .map((item) => item.answerValue);
+      const distractors = createNumericDistractors(candidate.answerValue, sameFieldValues);
+      return shuffle([candidate.answerValue, ...distractors]);
+    },
+    /**
+     * 判断用户所选答案是否等于当前题目的真实值。
+     *
+     * @param {number} choice - 用户选中的选项值。
+     * @param {{ candidate: { answerValue: number } }} question - 当前题目对象。
+     * @returns {boolean} 答对时返回 true。
+     */
+    grade(choice, question) {
+      return choice === question.candidate.answerValue;
+    },
+  },
+  detail_stack: {
+    label: "Stack Position",
+    collectCandidates: collectDetailStackCandidates,
+    /**
+     * 生成一道 stack 题的题面文本。
+     *
+     * @param {{ fullType: string }} candidate - 当前要出题的 candidate。
+     * @returns {string} 显示在页面上的题目文本。
+     */
+    buildPrompt(candidate) {
+      return `${candidate.fullType} belongs to which stack?`;
+    },
+    /**
+     * 生成 stack 题的两个选项。
+     *
+     * @returns {string[]} `top` 与 `bottom` 的随机顺序选项。
+     */
+    buildChoices() {
+      return shuffle(["top", "bottom"]);
+    },
+    /**
+     * 判断 stack 题答案是否正确。
+     *
+     * @param {string} choice - 用户选中的字符串答案。
+     * @param {{ candidate: { answerValue: string } }} question - 当前题目对象。
+     * @returns {boolean} 答对时返回 true。
+     */
+    grade(choice, question) {
+      return choice === question.candidate.answerValue;
+    },
+  },
+  type_dimensions: {
+    label: "Type Dimensions",
+    collectCandidates: collectTypeDimensionCandidates,
+    /**
+     * 生成一道尺寸题的题面文本。
+     *
+     * @param {{ fullType: string }} candidate - 当前要出题的 candidate。
+     * @returns {string} 显示在页面上的题目文本。
+     */
+    buildPrompt(candidate) {
+      return `Which dimension set can belong to ${candidate.fullType}?`;
+    },
+    /**
+     * 生成尺寸题的四个选项。
+     *
+     * @param {{ answerValue: string, visibleDimensionKeys: string[] }} candidate - 当前尺寸题 candidate。
+     * @param {Array<{ answerValue: string, visibleDimensionKeys: string[], entity: object }>} pool - 完整尺寸题池。
+     * @returns {string[]} 包含正确答案在内的选项。
+     */
+    buildChoices(candidate, pool) {
+      const signature = candidate.visibleDimensionKeys.join("|");
+      const sameStructureOptions = pool
+        .filter((item) => item.visibleDimensionKeys.join("|") === signature)
+        .map((item) => item.answerValue);
+
+      const distractors = createStringDistractors(candidate.answerValue, sameStructureOptions);
+
+      while (distractors.length < 3) {
+        const synthetic = buildSyntheticDimensionDistractor(candidate, pool, [
+          candidate.answerValue,
+          ...distractors,
+        ]);
+
+        if (!synthetic) {
+          break;
+        }
+
+        distractors.push(synthetic);
+      }
+
+      return shuffle([candidate.answerValue, ...distractors]);
+    },
+    /**
+     * 判断尺寸题答案是否正确。
+     *
+     * @param {string} choice - 用户选中的尺寸组合文本。
+     * @param {{ candidate: { answerValue: string } }} question - 当前题目对象。
+     * @returns {boolean} 答对时返回 true。
+     */
+    grade(choice, question) {
+      return choice === question.candidate.answerValue;
+    },
+  },
+  name_to_type: {
+    label: "Name To Type",
+    collectCandidates: collectNameToTypeCandidates,
+    /**
+     * 生成一道“名字找 type”题的题面文本。
+     *
+     * @param {{ fullName: string }} candidate - 当前要出题的 candidate。
+     * @returns {string} 显示在页面上的题目文本。
+     */
+    buildPrompt(candidate) {
+      return `Which type truly belongs to ${candidate.fullName}?`;
+    },
+    /**
+     * 生成名字题的四个选项。
+     *
+     * @param {{ answerValue: string, trueTypes: string[], baseType: string, baseName: string }} candidate - 当前题目的 candidate。
+     * @param {Array<{ answerValue: string, trueTypes: string[], baseType: string, baseName: string }>} pool - 完整名字题池。
+     * @returns {string[]} 包含正确答案在内的四个选项。
+     */
+    buildChoices(candidate, pool) {
+      const preferredPool = pool
+        .filter((item) => item.answerValue !== candidate.answerValue)
+        .filter((item) => !candidate.trueTypes.includes(item.answerValue))
+        .filter((item) => item.baseType === candidate.baseType || item.baseName === candidate.baseName)
+        .map((item) => item.answerValue);
+
+      const fallbackPool = pool
+        .filter((item) => item.answerValue !== candidate.answerValue)
+        .filter((item) => !candidate.trueTypes.includes(item.answerValue))
+        .map((item) => item.answerValue);
+
+      const distractors = createStringDistractors(candidate.answerValue, preferredPool);
+
+      if (distractors.length < 3) {
+        const fallbackDistractors = createStringDistractors(candidate.answerValue, fallbackPool);
+        for (const option of fallbackDistractors) {
+          if (!distractors.includes(option)) {
+            distractors.push(option);
+          }
+          if (distractors.length === 3) {
+            break;
+          }
+        }
+      }
+
+      return shuffle([candidate.answerValue, ...distractors.slice(0, 3)]);
+    },
+    /**
+     * 判断名字题答案是否正确。
+     *
+     * @param {string} choice - 用户选中的完整 type。
+     * @param {{ candidate: { answerValue: string } }} question - 当前题目对象。
+     * @returns {boolean} 答对时返回 true。
+     */
+    grade(choice, question) {
+      return choice === question.candidate.answerValue;
+    },
+  },
+};
+
+/**
+ * 为数值题目生成三个错误答案。
  *
  * @param {number} correctValue - 当前题目的正确答案。
  * @param {number[]} poolValues - 同一 detailKey 下出现过的其他答案值。
  * @returns {number[]} 三个不重复的错误选项。
  */
-function createDistractors(correctValue, poolValues) {
+function createNumericDistractors(correctValue, poolValues) {
   const uniqueValues = Array.from(new Set(poolValues.filter((value) => value !== correctValue)));
   const distractors = shuffle(uniqueValues).slice(0, 3);
 
@@ -47,69 +542,28 @@ function createDistractors(correctValue, poolValues) {
   return distractors;
 }
 
-const QUESTION_TYPES = {
-  detail_count: {
-    collectCandidates: normalizeData,
-    /**
-     * 生成一道“数量题”的题面文本。
-     *
-     * @param {{ fullType: string, detailKey: string }} candidate - 当前要出题的 candidate。
-     * @returns {string} 显示在页面上的题目文本。
-     */
-    buildPrompt(candidate) {
-      return `${candidate.fullType} has how many ${candidate.detailKey}?`;
-    },
-    /**
-     * 生成并打乱一道题显示的四个选项。
-     *
-     * @param {{ detailKey: string, answerValue: number }} candidate - 当前题目的 candidate。
-     * @param {Array<{ detailKey: string, answerValue: number }>} pool - 完整 candidate 池。
-     * @returns {number[]} 包含正确答案在内的四个选项。
-     */
-    buildChoices(candidate, pool) {
-      const sameFieldValues = pool
-        .filter((item) => item.detailKey === candidate.detailKey)
-        .map((item) => item.answerValue);
-      const distractors = createDistractors(candidate.answerValue, sameFieldValues);
-      return shuffle([candidate.answerValue, ...distractors]);
-    },
-    /**
-     * 判断用户所选答案是否等于当前题目的真实值。
-     *
-     * @param {number} choice - 用户选中的选项值。
-     * @param {{ candidate: { answerValue: number } }} question - 当前题目对象。
-     * @returns {boolean} 答对时返回 true。
-     */
-    grade(choice, question) {
-      return choice === question.candidate.answerValue;
-    },
-  },
-};
-
 /**
  * 把一条 candidate 转成可直接渲染的题目对象。
  *
- * @param {{
- *   id: string,
- *   fullType: string,
- *   detailKey: string,
- *   answerValue: number
- * }} candidate - 被选中用于出下一题的 candidate。
- * @param {Array<{ detailKey: string, answerValue: number }>} pool - 完整 candidate 池。
+ * @param {string} typeKey - 当前题型 key。
+ * @param {object} candidate - 被选中用于出下一题的 candidate。
+ * @param {object[]} pool - 当前题型的完整 candidate 池。
  * @returns {{
  *   type: string,
+ *   label: string,
  *   prompt: string,
- *   choices: number[],
+ *   choices: Array<string|number>,
  *   correctIndex: number,
  *   candidate: object
  * }} 可直接用于渲染的完整题目对象。
  */
-function createQuestion(candidate, pool) {
-  const questionType = QUESTION_TYPES.detail_count;
+function createQuestion(typeKey, candidate, pool) {
+  const questionType = QUESTION_TYPES[typeKey];
   const choices = questionType.buildChoices(candidate, pool);
   return {
-    type: "detail_count",
-    prompt: questionType.buildPrompt(candidate),
+    type: typeKey,
+    label: questionType.label,
+    prompt: questionType.buildPrompt(candidate, pool),
     choices,
     correctIndex: choices.indexOf(candidate.answerValue),
     candidate,
@@ -117,17 +571,24 @@ function createQuestion(candidate, pool) {
 }
 
 /**
- * 从 candidate 池里抽取下一题，尽量避免和上一题完全重复。
+ * 按题型随机抽取下一题来源，尽量避免与上一题完全重复。
  *
- * @returns {object|null} 下一条 candidate；如果题池为空则返回 null。
+ * @returns {{ typeKey: string, candidate: object }|null} 下一题的题型与 candidate。
  */
 function pickNextCandidate() {
-  const pool = state.candidates;
-  if (pool.length === 0) {
+  const availableTypeKeys = state.questionTypeKeys.filter((typeKey) => {
+    return (state.candidatePoolsByType[typeKey] || []).length > 0;
+  });
+
+  if (availableTypeKeys.length === 0) {
     return null;
   }
 
-  const filtered = pool.filter((candidate) => candidate.id !== state.lastCandidateId);
+  const typeKey = availableTypeKeys[Math.floor(Math.random() * availableTypeKeys.length)];
+  const pool = state.candidatePoolsByType[typeKey];
+  const filtered = pool.filter((candidate) => candidate.id !== state.lastQuestionId);
   const source = filtered.length > 0 ? filtered : pool;
-  return source[Math.floor(Math.random() * source.length)];
+  const candidate = source[Math.floor(Math.random() * source.length)];
+
+  return { typeKey, candidate };
 }

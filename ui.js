@@ -32,14 +32,15 @@ const elements = {
  */
 function renderQuestion(question) {
   state.currentQuestion = question;
-  state.lastCandidateId = question.candidate.id;
-  elements.questionType.textContent = "Detail Count";
+  state.lastQuestionId = question.candidate.id;
+  elements.questionType.textContent = question.label;
   elements.questionText.textContent = question.prompt;
 
   // question-context 只展示基础名字，避免把 name_suffix 或其他细节提前暴露出来。
   elements.questionContext.textContent = question.candidate.baseName || "";
 
-  elements.feedback.textContent = "Press A-D or tap a choice.";
+  const hotkeys = ["A", "B", "C", "D"].slice(0, question.choices.length).join("-");
+  elements.feedback.textContent = `Press ${hotkeys} or tap a choice.`;
   elements.feedback.className = "feedback";
   elements.nextButton.disabled = true;
 
@@ -47,9 +48,11 @@ function renderQuestion(question) {
 
   elements.choiceButtons.forEach((button, index) => {
     // 每一轮都复用同一批按钮，所以这里先把状态重置干净。
-    button.disabled = false;
+    const hasChoice = index < question.choices.length;
+    button.hidden = !hasChoice;
+    button.disabled = !hasChoice;
     button.className = "choice-button";
-    button.textContent = `${indexList[index]}. ${question.choices[index]}`;
+    button.textContent = hasChoice ? `${indexList[index]}. ${question.choices[index]}` : "";
   });
 }
 
@@ -120,13 +123,15 @@ function loadNextQuestion() {
     elements.questionContext.textContent = "Check the data and normalization rules.";
     elements.feedback.textContent = "Nothing to ask yet.";
     elements.choiceButtons.forEach((button) => {
+      button.hidden = false;
       button.disabled = true;
       button.textContent = "-";
     });
     return;
   }
 
-  renderQuestion(createQuestion(candidate, state.candidates));
+  const pool = state.candidatePoolsByType[candidate.typeKey] || [];
+  renderQuestion(createQuestion(candidate.typeKey, candidate.candidate, pool));
 }
 
 /**
@@ -158,7 +163,7 @@ function wireEvents() {
     if (choiceKeys.includes(event.key)) {
       const choiceIndex = choiceKeys.findIndex((key) => key === event.key);
       const button = elements.choiceButtons[choiceIndex];
-      if (button && !button.disabled) {
+      if (button && !button.hidden && !button.disabled) {
         submitAnswer(choiceIndex);
       }
     }
