@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DUKO Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="quiz-card">
+        <header class="quiz-header">
+          <div>
+            <p class="eyebrow">DUKO Quiz</p>
+            <h1>Cabinet Detail Drill</h1>
+          </div>
+          <div class="scoreboard" aria-live="polite">
+            <div class="score-pill">
+              <span class="score-label">Score</span>
+              <strong id="score-value">0</strong>
+            </div>
+            <div class="score-pill">
+              <span class="score-label">Answered</span>
+              <strong id="answered-value">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="question-panel" aria-live="polite">
+          <p id="question-type" class="question-type">Detail Count</p>
+          <h2 id="question-text">Loading question...</h2>
+          <p id="question-context" class="question-context"></p>
+        </section>
+
+        <section class="choices-panel" aria-label="Answer choices">
+          <button class="choice-button" data-choice-index="0" type="button"></button>
+          <button class="choice-button" data-choice-index="1" type="button"></button>
+          <button class="choice-button" data-choice-index="2" type="button"></button>
+          <button class="choice-button" data-choice-index="3" type="button"></button>
+        </section>
+
+        <footer class="quiz-footer">
+          <div id="feedback" class="feedback" aria-live="polite">
+            Press 1-4 or tap a choice.
+          </div>
+          <button id="next-button" class="next-button" type="button" disabled>
+            Next Question
+          </button>
+        </footer>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

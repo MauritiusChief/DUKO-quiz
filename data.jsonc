@@ -6,6 +6,7 @@
   "B": {
     // Base Attribute
     "name": "BASE CABINET",
+    "type_code": ["width"],
     "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
     "height": [34.5],
     "depth": [24],
@@ -22,6 +23,7 @@
   "DB": {
     // Base Attribute
     "name": "DRAWER BASE CABINET",
+    "type_code": ["width"],
     "width": [12, 15, 18, 21, 24, 27, 30, 33, 36],
     "height": [34.5],
     "depth": [24],
@@ -36,6 +38,7 @@
   "BMC": {
     // Base Attribute
     "name": "BASE MICROWAVE CABINET",
+    "type_code": ["width"],
     "width": [30, 27],
     "height": [34.5],
     "depth": [24]
@@ -46,6 +49,7 @@
   "DKD": {
     // Base Attribute
     "name": "DESK KNEE DREWER",
+    "type_code": ["width"],
     "width": [30, 36],
     "height": [6.625],
     "depth": [21],
@@ -60,6 +64,7 @@
   "BLS": {
     // Base Attribute
     "name": "BASE CORNER CABINET-LASY SUSAN",
+    "type_code": ["width"],
     "width": [33, 36],
     "height": [34.5],
     "depth": [24]
@@ -70,6 +75,7 @@
   "BBC": {
     // Base Attribute
     "name": "BASE BLIND CORNER CABINET",
+    "type_code": ["width"],
     "width": [36, 39, 42],
     "height": [34.5],
     "depth": [24],
@@ -85,6 +91,7 @@
   "BSR": {
     // Base Attribute
     "name": "BASE SPICE RACK CABINET",
+    "type_code": ["width"],
     "width": [6, 9, 12],
     "height": [34.5],
     "depth": [24]
@@ -93,13 +100,14 @@
   },
 
   "BES": {
-    "name": "BASE ENDING SHELF",
+    "name": "BASE ENDING SHELF", "type_code": ["width"],
     "width": [9], "height": [30], "depth": [24]
   },
 
   "RD": {
     // Base Attribute
     "name": "ROLL-OUT DRAWER",
+    "type_code": ["width"],
     "width": [18, 21, 24, 27, 30, 33, 36],
     "depth": [20.375]
     // Variant Attribute: None
@@ -109,6 +117,7 @@
   "SB": {
     // Base Attribute
     "name": "SINK BASE CABINET",
+    "type_code": ["width"],
     "width": [30, 33, 36, 42],
     "height": [34.5],
     "depth": [24],
@@ -121,12 +130,12 @@
   },
 
   "FSB": {
-    "name": "FARMHOUSE SINK BASE",
+    "name": "FARMHOUSE SINK BASE", "type_code": ["width"],
     "width": [36], "height": [34.5], "depth": [24]
   },
 
   "CSB": {
-    "name": "CORNER SINK",
+    "name": "CORNER SINK", "type_code": ["width"],
     "width": [42], "height": [34.5], "depth": [24]
   },
 
@@ -137,6 +146,7 @@
   "W": {
     // Base Attribute
     "name": "WALL CABINET",
+    "type_code": ["width", "height"],
     "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
     "height": [12, 15, 18, 21, 24, 30, 36, 42],
     "depth": [12, 24],
@@ -164,6 +174,7 @@
   "WDC": {
     // Base Attribute
     "name": "WALL DIAGONAL CORNER CABINET",
+    "type_code": ["width", "height"],
     "width": [24],
     "height": [15, 30, 36, 42],
     "depth": [12]
@@ -174,6 +185,7 @@
   "WER": {
     // Base Attribute
     "name": "WALL EASYREACH CORNER CABINET",
+    "type_code": ["width", "height"],
     "width": [24],
     "height": [30, 36, 42],
     "depth": [24]
@@ -184,6 +196,7 @@
   "WBC": {
     // Base Attribute
     "name": "WALL EASYREACH CORNER CABINET",
+    "type_code": ["width", "height"],
     "width": [27],
     "height": [30, 36, 42],
     "depth": [12]
@@ -194,6 +207,7 @@
   "WES": {
     // Base Attribute
     "name": "WALL ENDING SHELF",
+    "type_code": ["width", "height"],
     "width": [9],
     "height": [30, 36, 42],
     "depth": [12]
@@ -204,6 +218,7 @@
   "WMC": {
     // Base Attribute
     "name": "WALL MICROWAVE CABINET",
+    "type_code": ["width", "height"],
     "width": [30, 27],
     "height": [30, 36, 42],
     "depth": [12]
@@ -212,12 +227,12 @@
   },
 
   "WRC": {
-    "name": "WALL RACK",
+    "name": "WALL RACK", "type_code": ["width", "height"],
     "width": [30], "height": [15], "depth": [12]
   },
 
   "PR": {
-    "name": "PLATE RACK",
+    "name": "PLATE RACK", "type_code": ["width", "height"],
     "width": [30], "height": [15], "depth": [12]
   },
 
@@ -228,6 +243,7 @@
   "UT": {
     // Base Attribute
     "name": "PANTRY",
+    "type_code": ["width", "height", "depth"],
     "width": [18, 24, 36],
     "height": [30, 36, 42, 51, 54],
     "depth": [24],
@@ -244,6 +260,7 @@
   "OV": {
     // Base Attribute
     "name": "OVEN CABINET",
+    "type_code": ["width", "height", "depth"],
     "width": [33],
     "height": [15, 18, 21, 24, 27, 30, 66],
     "depth": [24],
@@ -262,6 +279,7 @@
   "VDB": {
     // Base Attribute
     "name": "VANITY DRAWER BASE CABINET",
+    "type_code": ["width"],
     "width": [12, 15, 18, 21, 24],
     "height": [34.5],
     "depth": [21]
@@ -272,6 +290,7 @@
   "VSB": {
     // Base Attribute
     "name": "VANITY SINK BASE CABINET",
+    "type_code": ["width"],
     "width": [24, 27, 30, 36],
     "height": [34.5],
     "depth": [21],
@@ -285,6 +304,7 @@
   "VSD": {
     // Base Attribute
     "name": "VANITY SINK BASE CABINET",
+    "type_code": ["width"],
     "width": [24, 27, 30, 36],
     "height": [34.5],
     "depth": [21],
@@ -298,6 +318,7 @@
   "VC": {
     // Base Attribute
     "name": "VANITY COMBINATION CABINET",
+    "type_code": ["width"],
     "width": [30, 36, 42, 48],
     "height": [34.5],
     "depth": [21],
@@ -322,6 +343,7 @@
   "BF": {
     // Base Attribute
     "name": "BASE FILLER",
+    "type_code": ["width"],
     "width": [3, 6],
     "height": [34.5],
     "thickness": [1]
@@ -332,6 +354,7 @@
   "WF": {
     // Base Attribute
     "name": "WALL FILLER",
+    "type_code": ["width"],
     "width": [3, 6],
     "length": [42],
     "thickness": [0.75]
@@ -342,6 +365,7 @@
   "TF": {
     // Base Attribute
     "name": "TALL FILLER",
+    "type_code": ["width"],
     "width": [3, 6, 1.5],
     "length": [96],
     "thickness": [0.75],
@@ -352,7 +376,7 @@
     }
   },
 
-  "TK": {
+  "TK8": {
     "name": "TOE KICK",
     "width": [4.5], "length": [96], "thickness": [0.25]
   },
@@ -360,20 +384,21 @@
   "PNL": {
     // Base Attribute
     "name": "PANEL",
-    "width": [23.5, 34.5, 36.5],
+    "type_code": ["width", "length"],
+    "width": [24, 36, 39],
     "length": [96],
     "thickness": [0.25, 0.5, 0.75],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
-      "alias": {"type": "SK", "width": [23.5], "thickness": [0.25]},
+      "alias": {"type": "SK", "width": [24], "thickness": [0.25]},
       "half_thick": {"type_suffix": "H", "thickness": [0.5]},
       "quarter_thick": {"type_suffix": "Q", "thickness": [0.25]},
       "triple_quarter_thick": {"type_suffix": "-3/4''", "thickness": [0.75]}
     }
   },
 
-  "VAL": {"name": "VALANCE", "width": [60]},
+  "VAL": {"name": "VALANCE", "type_code": ["width"], "width": [60]},
 
   "LM8": {
     // Base Attribute
@@ -406,7 +431,7 @@
   },
 
   "CP": {
-    "name": "POST",
+    "name": "POST", "type_code": ["width", "height"],
     "width": [3], "height": [34]
   },
 
@@ -430,6 +455,7 @@
   "WDD": {
     // Base Attribute
     "name": "DECOR DOOR",
+    "type_code": ["width", "height"],
     "width": [12],
     "height": [30, 36, 42]
     // Variant Attribute: None
@@ -437,31 +463,32 @@
   },
 
   "BDD": {
-    "name": "DECOR DOOR",
+    "name": "DECOR DOOR", "type_code": ["width"],
     "width": [24], "height": [30]
   },
 
   "VDD": {
-    "name": "DECOR DOOR",
+    "name": "DECOR DOOR", "type_code": ["width"],
     "width": [21], "height": [30]
   },
 
   "QR8": {"name": "QUARTER ROUND", "length": [96]},
 
-  "GH": {"name": "GLASS HOLDER", "width": [30]},
+  "GH": {"name": "GLASS HOLDER", "type_code": ["width"], "width": [30]},
 
   "BM8": {
     "name": "FANCY TOE KICK",
     "width": [4.5], "length": [96], "thickness": [0.75]},
 
   "BEP": {
-    "name": "BASE ENDING PANEL",
+    "name": "BASE ENDING PANEL", "type_code": ["width"],
     "width": [24], "height": [30]
   },
 
   "WEP": {
     // Base Attribute
     "name": "WALL ENDING PANEL",
+    "type_code": ["width", "height"],
     "width": [12],
     "height": [30, 36, 42]
     // Variant Attribute: None
