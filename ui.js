@@ -22,6 +22,7 @@ const elements = {
  *   candidate: {
  *     id: string,
  *     baseType: string,
+ *     baseName: string,
  *     displayName: string,
  *     tags: string,
  *     context: string
@@ -35,18 +36,8 @@ function renderQuestion(question) {
   elements.questionType.textContent = "Detail Count";
   elements.questionText.textContent = question.prompt;
 
-  const contextParts = [];
-  // 展示名可以帮助理解型号，但不会直接泄露数值答案。
-  if (question.candidate.displayName && question.candidate.displayName !== question.candidate.baseType) {
-    contextParts.push(question.candidate.displayName);
-  }
-  if (question.candidate.tags) {
-    contextParts.push(question.candidate.tags);
-  }
-  if (question.candidate.context) {
-    contextParts.push(question.candidate.context);
-  }
-  elements.questionContext.textContent = "PLACE HOLDER";
+  // question-context 只展示基础名字，避免把 name_suffix 或其他细节提前暴露出来。
+  elements.questionContext.textContent = question.candidate.baseName || "";
 
   elements.feedback.textContent = "Press A-D or tap a choice.";
   elements.feedback.className = "feedback";

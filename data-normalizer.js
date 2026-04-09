@@ -204,6 +204,7 @@ function collectApplicableDetails(item, dimensions) {
  * @returns {Array<{
  *   id: string,
  *   baseType: string,
+ *   baseName: string,
  *   fullType: string,
  *   displayName: string,
  *   detailKey: string,
@@ -312,6 +313,7 @@ function normalizeData(rawData) {
           const candidate = {
             id: `${fullType}:${detailKey}:${tagText || "base"}`,
             baseType,
+            baseName: item.name,
             fullType,
             displayName,
             detailKey,
