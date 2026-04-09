@@ -402,5 +402,70 @@
       "suffix_2": {"type_suffix": "2-1/2", "width": [3.4375]},
       "suffix_4": {"type_suffix": "4", "width": [4.375]}
     }
+  },
+
+  "CP": {
+    "name": "POST",
+    "width": [3], "height": [34]
+  },
+
+  "ACM8": {"name": "ANGLED CROWN MOLDING", "length": [96]},
+
+  "CCM": {
+    // Base Attribute
+    "name": "COUE CROWN MOLDING",
+    "width": [2.5, 5],
+    "length": [96],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "suffix_2": {"type_suffix": "2-1/2", "width": [2.5]},
+      "suffix_5": {"type_suffix": "5", "width": [5]}
+    }
+  },
+
+  "CBL": {"name": "CORBEL"},
+
+  "WDD": {
+    // Base Attribute
+    "name": "DECOR DOOR",
+    "width": [12],
+    "height": [30, 36, 42]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "BDD": {
+    "name": "DECOR DOOR",
+    "width": [24], "height": [30]
+  },
+
+  "VDD": {
+    "name": "DECOR DOOR",
+    "width": [21], "height": [30]
+  },
+
+  "QR8": {"name": "QUARTER ROUND", "length": [96]},
+
+  "GH": {"name": "GLASS HOLDER", "width": [30]},
+
+  "BM8": {
+    "name": "FANCY TOE KICK",
+    "width": [4.5], "length": [96], "thickness": [0.75]},
+
+  "BEP": {
+    "name": "BASE ENDING PANEL",
+    "width": [24], "height": [30]
+  },
+
+  "WEP": {
+    "name": "WALL ENDING PANEL",
+    "width": [12],
+    "height": [30, 36, 42]
+  },
+
+  "SD": {
+    "name": "SAMPLE DOOR",
+    "width": [12], "height": [15]
   }
 }
