@@ -1,7 +1,7 @@
 {
-  /**
+  /** ################################################################
   * BASE CABINETS
-  */
+  ################################################################ */
 
   "B": {
     // Base Attribute
@@ -130,9 +130,9 @@
     "width": [42], "height": [34.5], "depth": [24]
   },
 
-  /**
+  /** ################################################################
   * WALL CABINETS
-  */
+  ################################################################ */
 
   "W": {
     // Base Attribute
@@ -219,5 +219,99 @@
   "PR": {
     "name": "PLATE RACK",
     "width": [30], "height": [15], "depth": [12]
+  },
+
+  /** ################################################################
+  * PANTRY
+  ################################################################ */
+
+  "UT": {
+    // Base Attribute
+    "name": "PANTRY",
+    "width": [18, 24, 36],
+    "height": [30, 36, 42, 51, 54],
+    "depth": [24],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "single_door": {"door": 1, "width": [18]},
+      "double_door": {"door": 2, "name_suffix": " CABINET", "width": [24, 30, 36]},
+      "stack_top": {"stack": "top", "height": [30, 36, 42]},
+      "stack_bottom": {"stack": "bottom", "height": [51, 54]}
+    }
+  },
+
+  "OV": {
+    // Base Attribute
+    "name": "OVEN CABINET",
+    "width": [33],
+    "height": [15, 18, 21, 24, 27, 30, 66],
+    "depth": [24],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "stack_top": {"stack": "top", "height": [15, 18, 21, 24, 27, 30]},
+      "stack_bottom": {"stack": "bottom", "height": [66]}
+    }
+  },
+
+  /** ################################################################
+  * VANITY
+  ################################################################ */
+
+  "VDB": {
+    // Base Attribute
+    "name": "VANITY DRAWER BASE CABINET",
+    "width": [12, 15, 18, 21, 24],
+    "height": [34.5],
+    "depth": [21]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "VSB": {
+    // Base Attribute
+    "name": "VANITY SINK BASE CABINET",
+    "width": [24, 27, 30, 36],
+    "height": [34.5],
+    "depth": [21],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "real_drawer": {"drawer": 0, "fake_drawer": 1}
+    }
+  },
+
+  "VSD": {
+    // Base Attribute
+    "name": "VANITY SINK BASE CABINET",
+    "width": [24, 27, 30, 36],
+    "height": [34.5],
+    "depth": [21],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "real_drawer": {"drawer": 1, "fake_drawer": 0}
+    }
+  },
+
+  "VC": {
+    // Base Attribute
+    "name": "VANITY COMBINATION CABINET",
+    "width": [30, 36, 42, 48],
+    "height": [34.5],
+    "depth": [21],
+    // Variant Attribute
+    "variant": {
+      "left": {"direction": "left", "type_suffix": "L"},
+      "right": {"direction": "right", "type_suffix": "R"}
+    },
+    // Conbination Detail
+    "detail": {
+      "single_door": {"door": 1, "drawer": 2, "fake_drawer": 1, "width": [30]},
+      "double_door": {"door": 2, "drawer": 2, "fake_drawer": 1, "width": [36]},
+      "triple_drawer": {"door": 2, "drawer": 3, "fake_drawer": 1, "width": [42]},
+      "six_drawer": {"door": 2, "drawer": 6, "fake_drawer": 1, "width": [48]}
+    }
   }
 }
