@@ -7,8 +7,8 @@
     // Base Attribute
     "name": "BASE CABINET",
     "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
-    "depth": [24],
     "height": [34.5],
+    "depth": [24],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
@@ -23,8 +23,8 @@
     // Base Attribute
     "name": "DRAWER BASE CABINET",
     "width": [12, 15, 18, 21, 24, 27, 30, 33, 36],
-    "depth": [24],
     "height": [34.5],
+    "depth": [24],
     // Variant Attribute
     "variant": {
       "double_drawer": {"drawer": 2, "type_suffix": "-2", "allow_variant": {"width": [24, 30, 36]}},
@@ -37,8 +37,8 @@
     // Base Attribute
     "name": "BASE MICROWAVE CABINET",
     "width": [30, 27],
-    "depth": [24],
-    "height": [34.5]
+    "height": [34.5],
+    "depth": [24]
     // Variant Attribute: None
     // Conbination Detail: None
   },
@@ -47,8 +47,8 @@
     // Base Attribute
     "name": "DESK KNEE DREWER",
     "width": [30, 36],
-    "depth": [21],
     "height": [6.625],
+    "depth": [21],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
@@ -61,8 +61,8 @@
     // Base Attribute
     "name": "BASE CORNER CABINET-LASY SUSAN",
     "width": [33, 36],
-    "depth": [24],
-    "height": [34.5]
+    "height": [34.5],
+    "depth": [24]
     // Variant Attribute: None
     // Conbination Detail: None
   },
@@ -71,8 +71,8 @@
     // Base Attribute
     "name": "BASE BLIND CORNER CABINET",
     "width": [36, 39, 42],
-    "depth": [24],
     "height": [34.5],
+    "depth": [24],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
@@ -86,8 +86,8 @@
     // Base Attribute
     "name": "BASE SPICE RACK CABINET",
     "width": [6, 9, 12],
-    "depth": [24],
-    "height": [34.5]
+    "height": [34.5],
+    "depth": [24]
     // Variant Attribute: None
     // Conbination Detail: None
   },
@@ -96,8 +96,8 @@
     // Base Attribute
     "name": "BASE ENDING SHELF",
     "width": [9],
-    "depth": [24],
-    "height": [30]
+    "height": [30],
+    "depth": [24]
     // Variant Attribute: None
     // Conbination Detail: None
   },
@@ -115,8 +115,8 @@
     // Base Attribute
     "name": "SINK BASE CABINET",
     "width": [30, 33, 36, 42],
-    "depth": [24],
     "height": [34.5],
+    "depth": [24],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
@@ -129,8 +129,8 @@
     // Base Attribute
     "name": "FARMHOUSE SINK BASE",
     "width": [36],
-    "depth": [24],
-    "height": [34.5]
+    "height": [34.5],
+    "depth": [24]
     // Variant Attribute: None
     // Conbination Detail: None
   },
@@ -142,8 +142,8 @@
   "W": {
     // Base Attribute
     "width": [9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 42],
-    "depth": [12],
     "height": [12, 15, 30, 36, 42],
+    "depth": [12],
     // Variant Attribute: None
     // Conbination Detail
     "detail": {
