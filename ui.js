@@ -48,6 +48,7 @@ function renderQuestion(question) {
   }
   elements.questionContext.textContent = "PLACE HOLDER";
 
+  elements.feedback.textContent = "Press A-D or tap a choice.";
   elements.feedback.className = "feedback";
   elements.nextButton.disabled = true;
 
