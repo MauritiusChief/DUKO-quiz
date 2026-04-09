@@ -530,11 +530,13 @@ function renderQuestion(question) {
   elements.feedback.className = "feedback";
   elements.nextButton.disabled = true;
 
+  const indexList = ["A", "B", "C", "D"]
+
   elements.choiceButtons.forEach((button, index) => {
     // 每一轮都复用同一批按钮，所以这里先把状态重置干净。
     button.disabled = false;
     button.className = "choice-button";
-    button.textContent = `${index + 1}. ${question.choices[index]}`;
+    button.textContent = `${indexList[index]}. ${question.choices[index]}`;
   });
 }
 
@@ -618,7 +620,7 @@ function loadNextQuestion() {
  * 绑定点击和键盘事件，让用户可以答题并切到下一题。
  *
  * 键盘快捷键：
- * - `1` 到 `4`：选择答案
+ * - `A` 到 `D`：选择答案
  * - `Enter` 或 `Space`：答完后进入下一题
  *
  * @returns {void}
@@ -638,9 +640,11 @@ function wireEvents() {
   });
 
   window.addEventListener("keydown", (event) => {
+    const choiceKeys = ["a", "b", "c", "d"]
     // 数字键和屏幕上的四个选项按钮一一对应。
-    if (event.key >= "1" && event.key <= "4") {
-      const choiceIndex = Number(event.key) - 1;
+    if (choiceKeys.includes(event.key)) {
+      // console.log(event.key);
+      const choiceIndex = choiceKeys.findIndex(k => k === event.key);
       const button = elements.choiceButtons[choiceIndex];
       if (button && !button.disabled) {
         submitAnswer(choiceIndex);
