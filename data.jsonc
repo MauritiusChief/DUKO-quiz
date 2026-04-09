@@ -313,5 +313,94 @@
       "triple_drawer": {"door": 2, "drawer": 3, "fake_drawer": 1, "width": [42]},
       "six_drawer": {"door": 2, "drawer": 6, "fake_drawer": 1, "width": [48]}
     }
+  },
+
+  /** ################################################################
+  * MISC
+  ################################################################ */
+
+  "BF": {
+    // Base Attribute
+    "name": "BASE FILLER",
+    "width": [3, 6],
+    "height": [34.5],
+    "thickness": [1]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "WF": {
+    // Base Attribute
+    "name": "WALL FILLER",
+    "width": [3, 6],
+    "length": [42],
+    "thickness": [0.75]
+    // Variant Attribute: None
+    // Conbination Detail: None
+  },
+
+  "TF": {
+    // Base Attribute
+    "name": "TALL FILLER",
+    "width": [3, 6, 1.5],
+    "length": [96],
+    "thickness": [0.75],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "alias": {"type": "RF", "width": [1.5]}
+    }
+  },
+
+  "TK": {
+    "name": "TOE KICK",
+    "width": [4.5], "length": [96], "thickness": [0.25]
+  },
+
+  "PNL": {
+    // Base Attribute
+    "name": "PANEL",
+    "width": [23.5, 34.5, 36.5],
+    "length": [96],
+    "thickness": [0.25, 0.5, 0.75],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "alias": {"type": "SK", "width": [23.5], "thickness": [0.25]},
+      "half_thick": {"type_suffix": "H", "thickness": [0.5]},
+      "quarter_thick": {"type_suffix": "Q", "thickness": [0.25]},
+      "triple_quarter_thick": {"type_suffix": "-3/4''", "thickness": [0.75]}
+    }
+  },
+
+  "VAL": {"name": "VALANCE", "width": [60]},
+
+  "LM8": {
+    // Base Attribute
+    "name": "LIGHT MOLDING",
+    "length": [96],
+    // Variant Attribute
+    "variant": {
+      "l_shape": {"shape": "L", "type_suffix": "-L"},
+      "normal": {"shape": "normal"}
+    }
+  },
+
+  "SM8": {"name": "SCRIKE MOLDING", "length": [96]},
+
+  "OSM8": {"name": "OUTSIDE SCRIKE MOLDING", "length": [96]},
+
+  "CM": {
+    // Base Attribute
+    "name": "CROWN MOLDING",
+    "width": [2.5, 3.4375, 4.375],
+    "length": [96],
+    // Variant Attribute: None
+    // Conbination Detail
+    "detail": {
+      "suffix_1": {"type_suffix": "1-1/4", "width": [2.5]},
+      "suffix_2": {"type_suffix": "2-1/2", "width": [3.4375]},
+      "suffix_4": {"type_suffix": "4", "width": [4.375]}
+    }
   }
 }
