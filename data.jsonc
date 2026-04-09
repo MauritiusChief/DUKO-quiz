@@ -162,7 +162,7 @@
       "stackable": {"name": "WALL STACKABLE CABINET", "height": [12, 15], "depth": [12]},
       "not_stackable": {"not_exist": true, "width": [33, 42], "height": [12, 15], "depth": [12]},
 
-      "fridge": {"name": "WALL FRIDGE CABINET", "width": [30, 36], "height": [12, 15, 18, 21, 24], "depth": [24]},
+      "fridge": {"name": "WALL FRIDGE CABINET", "type_suffix": "24", "width": [30, 36], "height": [12, 15, 18, 21, 24], "depth": [24]},
       "not_fridge_width": {"not_exist": true, "width": [9, 12, 15, 18, 21, 24, 27, 33, 42], "depth": [24]},
       "not_fridge_height": {"not_exist": true, "height": [30, 36, 42], "depth": [24]},
 

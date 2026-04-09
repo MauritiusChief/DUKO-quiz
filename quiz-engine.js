@@ -657,7 +657,7 @@ function createNumericDistractors(correctValue, poolValues) {
   const uniqueValues = Array.from(new Set(poolValues.filter((value) => value !== correctValue)));
   const distractors = shuffle(uniqueValues).slice(0, 3);
 
-  let offset = 1;
+  let offset = 3;
   while (distractors.length < 3) {
     // 从正确答案向两侧逐步扩张，直到补够足够合理的错误选项。
     const fallbackValues = [correctValue - offset, correctValue + offset];
@@ -670,7 +670,7 @@ function createNumericDistractors(correctValue, poolValues) {
         break;
       }
     }
-    offset += 1;
+    offset += 3;
   }
 
   return distractors;
