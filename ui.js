@@ -23,6 +23,7 @@ const elements = {
  *     id: string,
  *     baseType: string,
  *     baseName: string,
+ *     contextName: string,
  *     displayName: string,
  *     tags: string,
  *     context: string
@@ -36,8 +37,9 @@ function renderQuestion(question) {
   elements.questionType.textContent = question.label;
   elements.questionText.textContent = question.prompt;
 
-  // question-context 只展示基础名字，避免把 name_suffix 或其他细节提前暴露出来。
-  elements.questionContext.textContent = question.candidate.baseName || "";
+  // question-context 默认展示基础名字；若命中了 detail 的直接重命名，则展示重命名后的名字。
+  // 这里仍然不会展示 name_suffix。
+  elements.questionContext.textContent = question.candidate.contextName || question.candidate.baseName || "";
 
   const hotkeys = ["A", "B", "C", "D"].slice(0, question.choices.length).join("-");
   elements.feedback.textContent = `Press ${hotkeys} or tap a choice.`;

@@ -206,6 +206,7 @@ function collectApplicableDetails(item, dimensions) {
  *   id: string,
  *   baseType: string,
  *   baseName: string,
+ *   contextName: string,
  *   fullType: string,
  *   fullName: string,
  *   displayName: string,
@@ -255,6 +256,7 @@ function normalizeData(rawData) {
         let effectiveType = baseType;
         let suffix = variantEntry.rule.type_suffix || "";
         let fullName = item.name;
+        let contextName = item.name;
 
         if (variantEntry.key !== "default") {
           activeTags.push(variantEntry.key.replaceAll("_", " "));
@@ -267,6 +269,7 @@ function normalizeData(rawData) {
 
           if (detailEntry.rule.name) {
             fullName = detailEntry.rule.name;
+            contextName = detailEntry.rule.name;
             displayNames.push(detailEntry.rule.name);
           }
 
@@ -319,6 +322,7 @@ function normalizeData(rawData) {
           id: `${fullType}:${fullName}:${tagText || "base"}`,
           baseType,
           baseName: item.name,
+          contextName,
           fullType,
           fullName,
           displayName,
