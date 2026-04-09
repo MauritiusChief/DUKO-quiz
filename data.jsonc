@@ -384,6 +384,7 @@
       "l_shape": {"shape": "L", "type_suffix": "-L"},
       "normal": {"shape": "normal"}
     }
+    // Conbination Detail: None
   },
 
   "SM8": {"name": "SCRIKE MOLDING", "length": [96]},
@@ -459,9 +460,12 @@
   },
 
   "WEP": {
+    // Base Attribute
     "name": "WALL ENDING PANEL",
     "width": [12],
     "height": [30, 36, 42]
+    // Variant Attribute: None
+    // Conbination Detail: None
   },
 
   "SD": {
